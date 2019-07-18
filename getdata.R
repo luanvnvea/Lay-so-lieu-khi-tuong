@@ -1,0 +1,21 @@
+library(darksky)
+solieu.khi.tuong=data.frame()
+vido="10.782844"				#Vi do khu vuc lay so lieu
+kinhdo="106.700431"				#Kinh do khu vuc lay do lieu
+ngay.bat.dau="2016-01-01"		 #ngay bat dau lay du lieu
+ngay.bat.dau=as.Date(ngay.bat.dau)	 #chuyen ngay bat dau thanh dinh dang ngay thang
+darksky_api_key(force = TRUE)
+5c63de796ab90a337724da6f29086113
+	#day la API key, dang ky mien phi tren trang darksky.net
+for (i in 1:365) {			#365 ngay trong 1 nam	
+	ngay.bat.dau=toString(ngay.bat.dau)
+	ngay.gio=paste(ngay.bat.dau,"T12:00:00-0400",sep='')
+	khi.tuong=data.frame(get_forecast_for(vido, kinhdo, ngay.gio, add_headers=FALSE,exclude="currently,daily"))
+		#chi lay so lieu gio, khong lay so lieu trung binh ngay, so lieu hien tai
+	solieu.thugon=khi.tuong[c("hourly.time","hourly.precipIntensity","hourly.temperature","hourly.humidity","hourly.windSpeed","hourly.windBearing","hourly.cloudCover")]
+		#chi lay 7 thong so co ban
+	solieu.khi.tuong=rbind(solieu.khi.tuong,solieu.thugon)		#ghep so lieu cac ngay vao 1 bang
+	ngay.bat.dau=as.Date(ngay.bat.dau)
+	ngay.bat.dau=ngay.bat.dau+1	
+}
+write.csv(solieu.khi.tuong,file=file.choose()) #luu so lieu vao file
